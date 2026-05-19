@@ -77,75 +77,161 @@
     align-items: start;
   }
 
-  /* ========== LEFT: image grid ========== */
-  .gallery { display: flex; flex-direction: column; gap: 24px; }
-
-  .img-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .img-card {
+  /* ========== LEFT: image gallery (thumb column + main display) ========== */
+  .gallery {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 28px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+  }
+  @media (max-width: 960px) {
+    .gallery { position: static; }
+  }
+  .gallery-media {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 16px;
+    align-items: start;
   }
 
-  .img-card .img-wrap {
+  .thumb-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 640px;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .thumb-col::-webkit-scrollbar { width: 4px; }
+  .thumb-col::-webkit-scrollbar-track { background: transparent; }
+  .thumb-col::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+  .thumb {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: var(--bg-soft);
-    border-radius: var(--radius);
+    background: var(--bp-white);
+    border: 2px solid transparent;
+    border-radius: 10px;
     overflow: hidden;
-    cursor: zoom-in;
-    transition: transform .25s ease;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color .15s ease, transform .12s ease;
   }
-  .img-card .img-wrap:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-  .img-card img {
-    width: 100%; height: 100%;
+  .thumb:hover { border-color: var(--cyan); }
+  .thumb.active { border-color: var(--cyan); }
+  .thumb img,
+  .thumb video {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     display: block;
   }
-
-  .img-card .img-caption {
-    font-size: 13px;
-    color: var(--muted);
-    text-align: left;
-    line-height: 1.45;
-    padding: 0 4px;
-  }
-  .img-card .img-caption strong {
-    color: var(--ink);
-    font-weight: 600;
-    display: block;
-    margin-bottom: 2px;
-    font-size: 14px;
-  }
-
-  /* See more button */
-  .see-more {
-    margin-top: 4px;
-    display: inline-flex;
+  .thumb.is-video video { object-fit: cover; }
+  .thumb-play-mini {
+    position: absolute;
+    inset: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 14px 22px;
-    background: #fff;
-    color: var(--navy);
-    border: 1.5px solid var(--navy);
-    border-radius: 999px;
-    font-family: var(--font);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    cursor: pointer;
-    transition: background .15s ease, color .15s ease;
-    align-self: flex-start;
+    background: rgba(7, 33, 60, 0.18);
+    pointer-events: none;
   }
-  .see-more:hover { background: var(--navy); color: #fff; }
-  .see-more svg { width: 14px; height: 14px; }
+  .thumb-play-mini::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 11px solid #fff;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    margin-left: 3px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+  }
+
+  /* Main display */
+  .main-display {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--bp-white);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .media-frame {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease;
+  }
+  .media-frame.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .media-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .media-frame.video-frame {
+    background: #07213C;
+  }
+  .media-frame.video-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .main-play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity .2s ease;
+  }
+  .media-frame.playing .main-play-overlay { opacity: 0; pointer-events: none; }
+  .main-play-overlay .play-circle {
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 12px 32px rgba(7, 33, 60, 0.5);
+  }
+  .main-play-overlay .play-circle::before {
+    border-left-width: 22px;
+    border-top-width: 14px;
+    border-bottom-width: 14px;
+  }
+
+  /* Mobile: thumbnails go horizontal below the main display */
+  @media (max-width: 980px) {
+    .gallery-media {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .thumb-col {
+      flex-direction: row;
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-right: 0;
+      padding-bottom: 4px;
+      order: 2;
+    }
+    .thumb {
+      width: 70px;
+      height: 70px;
+      aspect-ratio: 1 / 1;
+      flex-shrink: 0;
+    }
+    .main-display { order: 1; }
+  }
 
   /* ========== Validation row (below images) ========== */
   .validation {
@@ -160,46 +246,58 @@
   .trust-badges {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 12px;
     background: var(--bp-blue);
     border-radius: var(--radius);
-    padding: 28px 16px;
+    padding: 14px 12px;
   }
   .trust-badge {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 14px;
+    gap: 6px;
   }
   .trust-badge .seal {
-    width: 110px;
-    height: 110px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .trust-badge .seal svg { width: 100%; height: 100%; display: block; }
   .trust-badge .label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
     line-height: 1.3;
   }
   @media (max-width: 720px) {
-    .trust-badges { grid-template-columns: repeat(2, 1fr); padding: 20px 12px; }
-    .trust-badge .seal { width: 88px; height: 88px; }
+    .trust-badges { grid-template-columns: repeat(2, 1fr); padding: 12px 10px; }
+    .trust-badge .seal { width: 32px; height: 32px; }
   }
 
   .stats-row {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     align-items: center;
     background: var(--navy);
     color: #fff;
     border-radius: var(--radius);
-    padding: 22px 16px;
+    padding: 22px 12px;
+    gap: 8px;
   }
   .stat {
     text-align: center;
+    padding: 0 4px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat:last-child { border-right: none; }
+  @media (max-width: 560px) {
+    .stats-row { grid-template-columns: 1fr 1fr; gap: 14px 4px; }
+    .stat:nth-child(2) { border-right: none; }
   }
   .stat .num {
     font-size: 28px;
@@ -1730,63 +1828,94 @@
   <!-- LEFT: gallery -->
   <section class="gallery">
 
-    <!-- Row 1 — two images side by side, caption below each -->
-    <div class="img-row">
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/BlazePod_Trainer_Kit.jpg?v=1762199355&width=720"
-               alt="BlazePod Trainer Kit">
-        </div>
-        <div class="img-caption">
-          <strong>The Trainer Kit</strong>
-          6 Pods, charging base, and premium case — the complete reactive-training setup.
-        </div>
+    <!-- Thumbnail column + main display -->
+    <div class="gallery-media">
+      <div class="thumb-col" role="tablist" aria-label="Product media">
+
+        <button class="thumb is-video active" type="button" role="tab" aria-selected="true" data-media="0">
+          <video preload="metadata" muted playsinline>
+            <source src="https://cdn.shopify.com/videos/c/o/v/fd264780996f4e6a952804bd37b05358.mp4#t=0.5" type="video/mp4">
+          </video>
+          <span class="thumb-play-mini" aria-hidden="true"></span>
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="1">
+          <img src="https://www.blazepod.com/cdn/shop/files/BlazePod_Trainer_Kit.jpg?v=1762199355&width=200" alt="Trainer Kit">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="2">
+          <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=200" alt="Trainer Kit in action">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="3">
+          <img src="https://www.blazepod.com/cdn/shop/files/6_Pods_Front_Grey2_37d1950d-829b-4e9a-afc4-1ee503f465f4.png?v=1756964721&width=200" alt="6 Pods">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="4">
+          <img src="https://www.blazepod.com/cdn/shop/files/ChargingBase-1_ca8b7150-33af-4394-b63e-da63f2a8c4fa.png?v=1770023307&width=200" alt="Charging base">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="5">
+          <img src="https://www.blazepod.com/cdn/shop/files/Pod_Front_5f8f399d-4a6f-4179-bb9b-f17c22e076ad.png?v=1770023307&width=200" alt="Single Pod close-up">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="6">
+          <img src="https://www.blazepod.com/cdn/shop/files/Case_Small_Topshot_DarkBlue_64617300-935d-4196-8e11-8bc0c1041eb5.png?v=1756964792&width=200" alt="Premium case">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="7">
+          <img src="https://www.blazepod.com/cdn/shop/files/CopyofBag6Pods_1_ec9027e0-6a08-4db3-999e-87a70a0642d9.png?v=1756964721&width=200" alt="Pods bag">
+        </button>
+
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="8">
+          <img src="https://www.blazepod.com/cdn/shop/files/typec.png?v=1774623195&width=200" alt="USB-C charging">
+        </button>
+
       </div>
 
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=720"
-               alt="Trainer Kit in action">
+      <div class="main-display">
+
+        <div class="media-frame video-frame active" data-media="0" role="tabpanel">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/fd264780996f4e6a952804bd37b05358.mp4#t=0.5" type="video/mp4">
+          </video>
+          <div class="main-play-overlay" aria-label="Play video"><div class="play-circle"></div></div>
         </div>
-        <div class="img-caption">
-          <strong>Built for one-on-one training</strong>
-          Designed for individual athletes and coaches running personalized sessions.
+
+        <div class="media-frame" data-media="1" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/BlazePod_Trainer_Kit.jpg?v=1762199355&width=900" alt="Trainer Kit">
         </div>
+
+        <div class="media-frame" data-media="2" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=900" alt="Trainer Kit in action">
+        </div>
+
+        <div class="media-frame" data-media="3" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/6_Pods_Front_Grey2_37d1950d-829b-4e9a-afc4-1ee503f465f4.png?v=1756964721&width=900" alt="6 Pods">
+        </div>
+
+        <div class="media-frame" data-media="4" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/ChargingBase-1_ca8b7150-33af-4394-b63e-da63f2a8c4fa.png?v=1770023307&width=900" alt="Charging base">
+        </div>
+
+        <div class="media-frame" data-media="5" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/Pod_Front_5f8f399d-4a6f-4179-bb9b-f17c22e076ad.png?v=1770023307&width=900" alt="Single Pod close-up">
+        </div>
+
+        <div class="media-frame" data-media="6" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/Case_Small_Topshot_DarkBlue_64617300-935d-4196-8e11-8bc0c1041eb5.png?v=1756964792&width=900" alt="Premium case">
+        </div>
+
+        <div class="media-frame" data-media="7" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/CopyofBag6Pods_1_ec9027e0-6a08-4db3-999e-87a70a0642d9.png?v=1756964721&width=900" alt="Pods bag">
+        </div>
+
+        <div class="media-frame" data-media="8" role="tabpanel">
+          <img src="https://www.blazepod.com/cdn/shop/files/typec.png?v=1774623195&width=900" alt="USB-C charging">
+        </div>
+
       </div>
     </div>
-
-    <!-- Row 2 — second pair -->
-    <div class="img-row">
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/6_Pods_Front_Grey2_37d1950d-829b-4e9a-afc4-1ee503f465f4.png?v=1756964721&width=720"
-               alt="6 Pods close-up">
-        </div>
-        <div class="img-caption">
-          <strong>Built to take a hit</strong>
-          Impact-rated, splash-proof Pods with 60ms touch response — drilled, dropped, and dependable.
-        </div>
-      </div>
-
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/ChargingBase-1_ca8b7150-33af-4394-b63e-da63f2a8c4fa.png?v=1770023307&width=720"
-               alt="Charging Base">
-        </div>
-        <div class="img-caption">
-          <strong>Charge all 6 at once</strong>
-          USB-C charging base with full-kit capacity — set down at the end of a session, ready by morning.
-        </div>
-      </div>
-    </div>
-
-    <!-- See more button -->
-    <button class="see-more" id="seeMoreBtn" type="button">
-      See more images
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
 
     <!-- Validation block -->
     <div class="validation">
@@ -1794,121 +1923,50 @@
       <!-- Trust badges — circular seal style -->
       <div class="trust-badges">
 
-        <!-- 1. 100% Secure Payment -->
+        <!-- 1. 100% Secure Payment — lock icon -->
         <div class="trust-badge">
           <div class="seal">
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <path id="topArc1" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
-                <path id="botArc1" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
-              </defs>
-              <circle cx="60" cy="60" r="56" fill="#07213C"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#topArc1" startOffset="50%" text-anchor="middle">100% SECURE</textPath>
-              </text>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#botArc1" startOffset="50%" text-anchor="middle">PAYMENT</textPath>
-              </text>
-              <!-- Side stars -->
-              <text x="14" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
-              <text x="106" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
-              <!-- Lock icon center -->
-              <g transform="translate(60,62)">
-                <rect x="-10" y="-2" width="20" height="14" rx="2" fill="#FFFFFF"/>
-                <path d="M -6,-2 L -6,-9 A 6,6 0 0,1 6,-9 L 6,-2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
-                <path d="M -3,4 L -0.5,7 L 4,1" fill="none" stroke="#07213C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <rect x="11" y="22" width="26" height="20" rx="2.5"/>
+              <path d="M17 22v-7a7 7 0 0 1 14 0v7"/>
+              <circle cx="24" cy="30" r="1.8" fill="currentColor" stroke="none"/>
+              <line x1="24" y1="31.5" x2="24" y2="35"/>
             </svg>
           </div>
           <span class="label">100% Secure Payment</span>
         </div>
 
-        <!-- 2. Money-Back Guarantee (14 Days) -->
+        <!-- 2. Money-Back Guarantee — refresh arrow icon -->
         <div class="trust-badge">
           <div class="seal">
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <path id="topArc2" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
-                <path id="botArc2" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
-              </defs>
-              <circle cx="60" cy="60" r="56" fill="#07213C"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#topArc2" startOffset="50%" text-anchor="middle">MONEY BACK</textPath>
-              </text>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#botArc2" startOffset="50%" text-anchor="middle">GUARANTEE</textPath>
-              </text>
-              <!-- Side stars -->
-              <text x="14" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
-              <text x="106" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
-              <!-- Center stack: 14 / DAYS -->
-              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="800" text-anchor="middle">14</text>
-              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1" text-anchor="middle">DAYS</text>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M37 24a13 13 0 1 1-3.5-8.9"/>
+              <polyline points="38,8 38,16 30,16"/>
+              <text x="24" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">14</text>
             </svg>
           </div>
-          <span class="label">Money-Back Guarantee</span>
+          <span class="label">14-day Money Back</span>
         </div>
 
-        <!-- 3. 24/7 Support -->
+        <!-- 3. 24/7 Support — headset icon -->
         <div class="trust-badge">
           <div class="seal">
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <path id="topArc3" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
-                <path id="botArc3" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
-              </defs>
-              <circle cx="60" cy="60" r="56" fill="#07213C"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
-              <!-- Top stars row instead of curved text up top -->
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2">
-                <textPath href="#topArc3" startOffset="50%" text-anchor="middle">★ ★ ★ ★ ★</textPath>
-              </text>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#botArc3" startOffset="50%" text-anchor="middle">SUPPORT</textPath>
-              </text>
-              <!-- Center stack: 24 / HOURS -->
-              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="800" text-anchor="middle">24</text>
-              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1" text-anchor="middle">HOURS</text>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 30v-6a14 14 0 0 1 28 0v6"/>
+              <rect x="7" y="28" width="8" height="13" rx="2"/>
+              <rect x="33" y="28" width="8" height="13" rx="2"/>
+              <path d="M37 41a4 4 0 0 1-4 4h-3"/>
             </svg>
           </div>
           <span class="label">24/7 Support</span>
         </div>
 
-        <!-- 4. 1-Year Warranty -->
+        <!-- 4. 1-Year Warranty — shield with check -->
         <div class="trust-badge">
           <div class="seal">
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <path id="topArc4" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
-                <path id="botArc4" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
-              </defs>
-              <circle cx="60" cy="60" r="56" fill="#07213C"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
-              <!-- Top stars -->
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2">
-                <textPath href="#topArc4" startOffset="50%" text-anchor="middle">★ ★ ★</textPath>
-              </text>
-              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
-                <textPath href="#botArc4" startOffset="50%" text-anchor="middle">WARRANTY</textPath>
-              </text>
-              <!-- Laurel branches on sides -->
-              <g fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round">
-                <!-- Left laurel -->
-                <path d="M 28,60 Q 24,52 26,44"/>
-                <path d="M 28,60 Q 30,52 28,44"/>
-                <path d="M 28,56 Q 25,54 24,50"/>
-                <path d="M 28,52 Q 25,50 24,46"/>
-                <!-- Right laurel -->
-                <path d="M 92,60 Q 96,52 94,44"/>
-                <path d="M 92,60 Q 90,52 92,44"/>
-                <path d="M 92,56 Q 95,54 96,50"/>
-                <path d="M 92,52 Q 95,50 96,46"/>
-              </g>
-              <!-- Center stack: 1 / YEAR -->
-              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">1</text>
-              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" text-anchor="middle">YEAR</text>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 5l15 6v10c0 9.4-6 17-15 19-9-2-15-9.6-15-19V11z"/>
+              <path d="M17 24l5 5 9-10"/>
             </svg>
           </div>
           <span class="label">1-Year Warranty</span>
@@ -1929,6 +1987,10 @@
         <div class="stat">
           <div class="num">60+</div>
           <div class="label">Countries</div>
+        </div>
+        <div class="stat">
+          <div class="num">500+</div>
+          <div class="label">Community &amp;<br>BlazePod drills</div>
         </div>
       </div>
 
@@ -2616,72 +2678,44 @@
   </div>
 </section>
 
-<!-- Modal: more images -->
-<div class="modal-overlay" id="moreModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 class="modal-title" id="modalTitle">More images</h2>
-      <button class="modal-close" id="modalClose" type="button" aria-label="Close">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/Pod_Front_5f8f399d-4a6f-4179-bb9b-f17c22e076ad.png?v=1770023307&width=720"
-               alt="Single Pod, front view">
-        </div>
-        <div class="img-caption">
-          <strong>The Pod, up close</strong>
-          Tactile silicone shell, full RGB lighting ring, capacitive top — engineered for any surface.
-        </div>
-      </div>
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/CopyofBag6Pods_1_ec9027e0-6a08-4db3-999e-87a70a0642d9.png?v=1756964721&width=720"
-               alt="Pods in bag">
-        </div>
-        <div class="img-caption">
-          <strong>Pack and go</strong>
-          Premium carry-bag fits all 6 Pods, charging base, and accessories — built for travel between sessions.
-        </div>
-      </div>
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/typec.png?v=1774623195&width=720"
-               alt="USB-C charging">
-        </div>
-        <div class="img-caption">
-          <strong>USB-C standard</strong>
-          One cable for everything — no proprietary ports, no chasing adapters.
-        </div>
-      </div>
-      <div class="img-card">
-        <div class="img-wrap">
-          <img src="https://www.blazepod.com/cdn/shop/files/Case_Small_Topshot_DarkBlue_64617300-935d-4196-8e11-8bc0c1041eb5.png?v=1756964792&width=720"
-               alt="Premium case open">
-        </div>
-        <div class="img-caption">
-          <strong>The premium case</strong>
-          Hard-shell exterior, foam-cut interior — protects the kit between gym, field, and clinic.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-  const openBtn = document.getElementById('seeMoreBtn');
-  const modal = document.getElementById('moreModal');
-  const closeBtn = document.getElementById('modalClose');
-
-  openBtn.addEventListener('click', () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; });
-  closeBtn.addEventListener('click', () => { modal.classList.remove('open'); document.body.style.overflow = ''; });
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) { modal.classList.remove('open'); document.body.style.overflow = ''; }
+  // Gallery — thumbnail click swaps the main display
+  const thumbsAll = document.querySelectorAll('.thumb');
+  const framesAll = document.querySelectorAll('.media-frame');
+  thumbsAll.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const idx = thumb.dataset.media;
+      thumbsAll.forEach(t => {
+        const isActive = t === thumb;
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      framesAll.forEach(frame => {
+        const isActive = frame.dataset.media === idx;
+        frame.classList.toggle('active', isActive);
+        const v = frame.querySelector('video');
+        if (v && !isActive) {
+          v.pause();
+          v.muted = true;
+          v.removeAttribute('controls');
+          frame.classList.remove('playing');
+        }
+      });
+    });
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) {
-      modal.classList.remove('open'); document.body.style.overflow = '';
-    }
+
+  // Main video click → play with sound + controls
+  document.querySelectorAll('.media-frame.video-frame').forEach(frame => {
+    const video = frame.querySelector('video');
+    const overlay = frame.querySelector('.main-play-overlay');
+    if (!overlay || !video) return;
+    overlay.addEventListener('click', () => {
+      if (!frame.classList.contains('active')) return;
+      video.muted = false;
+      video.setAttribute('controls', '');
+      video.play();
+      frame.classList.add('playing');
+    });
   });
 
   // Tabs
