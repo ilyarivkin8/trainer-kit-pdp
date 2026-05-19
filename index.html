@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlazePod Trainer Kit — PDP Mockup v1</title>
+<style>
+  :root {
+    /* ===== BlazePod Brand Palette ===== */
+    --navy: #07213C;          /* BlazePod Black — primary dark */
+    --navy-2: #0E2D4F;        /* Lighter navy for layered cards */
+    --cyan: #0FC9E7;          /* BlazePod Cyan — energy accent */
+    --cyan-deep: #0AA8C3;     /* Slightly darker cyan for hover/active */
+    --bp-white: #F2F4FC;      /* BlazePod White — cool off-white */
+    --bp-blue: #DAE3F5;       /* BlazePod Bright Blue — light surface */
+    --cyan-tint: #E6F8FC;     /* Derived: very light cyan for soft highlights */
+
+    /* Aliases mapped to brand */
+    --ink: #07213C;
+    --text: #1F2937;
+    --muted: #5F7283;
+    --line: #DAE3F5;          /* Use Bright Blue as the soft border */
+    --line-soft: #EBF0FA;     /* Lighter version */
+    --bg: #FFFFFF;
+    --bg-soft: #F2F4FC;       /* BlazePod White as the soft bg */
+    --accent: #0FC9E7;        /* Brand accent = Cyan */
+    --accent-soft: #E6F8FC;   /* Light cyan tint */
+
+    --shadow-sm: 0 1px 2px rgba(7,33,60,.06);
+    --shadow-md: 0 6px 18px rgba(7,33,60,.08);
+    --shadow-lg: 0 24px 48px rgba(7,33,60,.18);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --container: 1240px;
+    --gutter: 32px;
+    --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+
+  /* ========== Top bar (placeholder) ========== */
+  .topbar {
+    background: var(--navy);
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 10px 16px;
+  }
+  .topbar a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+  .breadcrumb {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 18px var(--gutter);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--ink); }
+
+  /* ========== Main PDP grid ========== */
+  .pdp {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter) 64px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 48px;
+    align-items: start;
+  }
+
+  /* ========== LEFT: image grid ========== */
+  .gallery { display: flex; flex-direction: column; gap: 24px; }
+
+  .img-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .img-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .img-card .img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--bg-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: zoom-in;
+    transition: transform .25s ease;
+  }
+  .img-card .img-wrap:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .img-card img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .img-card .img-caption {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: left;
+    line-height: 1.45;
+    padding: 0 4px;
+  }
+  .img-card .img-caption strong {
+    color: var(--ink);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 14px;
+  }
+
+  /* See more button */
+  .see-more {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 22px;
+    background: #fff;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+    align-self: flex-start;
+  }
+  .see-more:hover { background: var(--navy); color: #fff; }
+  .see-more svg { width: 14px; height: 14px; }
+
+  /* ========== Validation row (below images) ========== */
+  .validation {
+    margin-top: 8px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .trust-badges {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    background: var(--bp-blue);
+    border-radius: var(--radius);
+    padding: 28px 16px;
+  }
+  .trust-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .trust-badge .seal {
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+  }
+  .trust-badge .seal svg { width: 100%; height: 100%; display: block; }
+  .trust-badge .label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  @media (max-width: 720px) {
+    .trust-badges { grid-template-columns: repeat(2, 1fr); padding: 20px 12px; }
+    .trust-badge .seal { width: 88px; height: 88px; }
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--navy);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 22px 16px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat .num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat .label {
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .payment-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
+  .payment-logos img {
+    height: 24px;
+    width: auto;
+    opacity: 0.75;
+    transition: opacity .15s ease;
+  }
+  .payment-logos img:hover { opacity: 1; }
+  .payment-label {
+    width: 100%;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* ========== RIGHT: product details ========== */
+  .details {
+    position: sticky;
+    top: 24px;
+    background: #fff;
+    padding: 8px 0;
+  }
+
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .stars .star-track {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .stars svg { width: 18px; height: 18px; fill: var(--accent); }
+  .stars .count {
+    color: var(--muted);
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .product-name {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--navy);
+    margin: 0 0 12px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .price {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 24px;
+    line-height: 1;
+  }
+
+  /* ========== Kit selector (sibling kits) ========== */
+  .kit-selector {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .kit-selector-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .kit-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .kit-card {
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 8px 12px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    text-align: center;
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .kit-card:hover { border-color: var(--cyan); }
+  .kit-card.active {
+    border-color: var(--cyan);
+    background: var(--accent-soft);
+    box-shadow: var(--shadow-sm);
+  }
+  .kit-card .badge-popular {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: var(--cyan);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .kit-card-img {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bp-white);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .kit-card-img img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+  }
+  .kit-card-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+  .kit-card-meta {
+    font-size: 10.5px;
+    color: var(--muted);
+    line-height: 1.3;
+    min-height: 14px;
+  }
+  .kit-card-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-top: 2px;
+  }
+  .kit-card.active .kit-card-price { color: var(--navy); }
+
+  .add-to-cart {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 24px;
+    background: var(--cyan);
+    color: var(--navy);
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform .12s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .add-to-cart:hover {
+    background: var(--cyan-deep);
+    box-shadow: 0 8px 20px rgba(15, 201, 231, 0.4);
+    transform: translateY(-1px);
+  }
+  .add-to-cart:active { transform: translateY(0); }
+
+  /* ========== Affirm financing line ========== */
+  .affirm-line {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .affirm-line .affirm-mark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    color: #4A4AF4; /* Affirm brand indigo */
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    transform: translateY(1px);
+  }
+  .affirm-line .affirm-mark::after {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #4A4AF4;
+    margin-left: 3px;
+    transform: translateY(-1px);
+  }
+  .affirm-line a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .affirm-line a:hover { text-decoration: underline; }
+
+  /* ========== Tabs (below Add to Cart) ========== */
+  .tabs {
+    margin-top: 28px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 4px;
+    margin-right: 24px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    position: relative;
+    letter-spacing: 0.2px;
+    transition: color .15s ease;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--navy); }
+  .tab-btn.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .tab-panel {
+    display: none;
+    animation: fadeInPanel .2s ease;
+  }
+  .tab-panel.active { display: block; }
+  @keyframes fadeInPanel { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tab-panel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tab-panel li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .tab-panel li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .tab-panel li strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ========== Add Ons (below tabs) ========== */
+  .addons {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .addons-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .addon-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .addon-card {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    text-align: left;
+    font-family: var(--font);
+  }
+  .addon-card:hover {
+    border-color: var(--navy);
+    box-shadow: var(--shadow-sm);
+  }
+  .addon-card.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .addon-thumb {
+    width: 64px;
+    height: 64px;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .addon-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .addon-info {
+    min-width: 0;
+  }
+  .addon-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .addon-qty-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cyan);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .addon-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .addon-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .addon-pricecol {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .addon-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .addon-price .strike {
+    color: var(--muted);
+    text-decoration: line-through;
+    font-weight: 500;
+    margin-left: 4px;
+    font-size: 12px;
+  }
+  .addon-toggle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    transition: all .15s ease;
+    flex-shrink: 0;
+  }
+  .addon-card.selected .addon-toggle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .addon-card.selected .addon-toggle::after { content: "✓"; font-size: 14px; font-weight: 700; }
+  .addon-card:not(.selected) .addon-toggle::after { content: "+"; font-size: 18px; font-weight: 500; }
+
+  /* ========== Benefits (below Add Ons) ========== */
+  .benefits {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .benefits-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .benefit {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 10px 0;
+    align-items: start;
+  }
+  .benefit + .benefit {
+    border-top: 1px solid var(--line);
+  }
+  .benefit-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .benefit-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .benefit-body {
+    min-width: 0;
+  }
+  .benefit-headline {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .benefit-copy {
+    margin-top: 3px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  /* ========== Research / Science band (full-width) ========== */
+  .science {
+    background: var(--navy);
+    color: #fff;
+    margin-top: 24px;
+    border-radius: var(--radius);
+  }
+  .science-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 56px var(--gutter);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .science-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .science-eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .science-headline {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.4px;
+    margin: 0 0 18px;
+  }
+  .science-headline em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .science-body {
+    font-size: 16px;
+    color: #C9D4E2;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .science-body strong {
+    color: #fff;
+    font-weight: 600;
+  }
+  .science-source {
+    margin-top: 22px;
+    font-size: 12px;
+    color: #8DA4C0;
+    letter-spacing: 0.4px;
+  }
+  .science-source a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .science-source a:hover { text-decoration: underline; }
+
+  /* Stat card on right */
+  .science-stat {
+    background: #0E2D4F;
+    border: 1px solid #1B3556;
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .science-stat::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .stat-figures {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .stat-figure {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-figure .num {
+    font-size: 56px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .stat-figure .unit {
+    margin-top: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8DA4C0;
+    font-weight: 600;
+  }
+  .stat-times {
+    font-size: 32px;
+    color: #5A7398;
+    font-weight: 500;
+    transform: translateY(-12px);
+  }
+  .stat-results {
+    border-top: 1px solid #1B3556;
+    padding-top: 18px;
+  }
+  .stat-results-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #8DA4C0;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .stat-results ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .stat-results li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .stat-results li::before {
+    content: "↑";
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  @media (max-width: 980px) {
+    .science-inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 40px 20px;
+    }
+    .science-headline { font-size: 28px; }
+    .stat-figure .num { font-size: 44px; }
+  }
+
+  /* ========== Setup Section (compact progress + active video) ========== */
+  .setup-reels {
+    background: var(--bp-white);
+  }
+  .setup-reels-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 48px var(--gutter) 44px;
+  }
+  .setup-reels-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .setup-reels-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -0.3px;
+    margin: 0;
+    line-height: 1.2;
+    flex: 1 1 60%;
+  }
+  .setup-reels-sub {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 4px 0 0;
+    line-height: 1.5;
+  }
+  .setup-reels-time {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .setup-reels-time strong {
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  .setup-flow {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* Left: step list with vertical progress */
+  .setup-steps {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .setup-steps::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 28px;
+    bottom: 28px;
+    width: 2px;
+    background: var(--line);
+    border-radius: 2px;
+  }
+  .step-item {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: background .15s ease;
+    z-index: 1;
+  }
+  .step-item:hover {
+    background: var(--accent-soft);
+  }
+  .step-item.active {
+    background: var(--accent-soft);
+  }
+  .step-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--line);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: all .2s ease;
+    margin-left: 6px;
+  }
+  .step-item.active .step-dot {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--navy);
+    box-shadow: 0 0 0 4px rgba(15, 201, 231, 0.18);
+  }
+  .step-item.done .step-dot {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+  .step-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .step-eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--cyan-deep);
+    margin-bottom: 2px;
+  }
+  .step-item:not(.active) .step-eyebrow { color: var(--muted); }
+  .step-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 3px;
+    line-height: 1.25;
+  }
+  .step-desc {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .step-item:not(.active) .step-desc { color: var(--muted); }
+
+  /* Right: large active video player */
+  .setup-player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #0E1F36;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .player-frame {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease;
+  }
+  .player-frame.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .player-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .player-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity .2s ease;
+  }
+  .player-frame.playing .player-overlay { opacity: 0; pointer-events: none; }
+  .player-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: var(--cyan);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    z-index: 2;
+  }
+
+  @media (max-width: 880px) {
+    .setup-reels-inner { padding: 40px 16px; }
+    .setup-flow {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .setup-reels-head { flex-direction: column; align-items: flex-start; }
+    .setup-reels-time { text-align: left; }
+  }
+
+  /* ========== Testimonials (full-width) ========== */
+  .testimonials {
+    background: var(--bg);
+    margin-top: 16px;
+  }
+  .testimonials-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 72px var(--gutter) 56px;
+  }
+  .testimonials-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+  .testimonials-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 40px;
+    font-style: italic;
+  }
+  .testimonial-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+  }
+  .testimonial-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .testimonial-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    background: #0E1F36;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .testimonial-video:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  .testimonial-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .testimonial-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .testimonial-video.playing .testimonial-play { opacity: 0; }
+  .play-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(7, 33, 60, 0.45);
+    transition: transform .2s ease, background .2s ease;
+  }
+  .testimonial-video:hover .play-circle {
+    background: var(--accent);
+    transform: scale(1.06);
+  }
+  .play-circle::before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 18px solid var(--navy);
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    margin-left: 5px;
+  }
+  .testimonial-video:hover .play-circle::before {
+    border-left-color: #fff;
+  }
+  .testimonial-meta {
+    text-align: center;
+    padding: 4px;
+  }
+  .testimonial-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .testimonial-role {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+
+  @media (max-width: 980px) {
+    .testimonials-inner { padding: 56px 16px 40px; }
+    .testimonials-title { font-size: 24px; }
+    .testimonial-row {
+      grid-template-columns: repeat(5, 78%);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 14px;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .testimonial-card { scroll-snap-align: start; }
+    .play-circle { width: 52px; height: 52px; }
+  }
+
+  /* ========== Reviews ========== */
+  .reviews {
+    background: var(--bg-soft);
+  }
+  .reviews-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 72px var(--gutter);
+  }
+  .reviews-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 36px;
+  }
+
+  /* Aggregate header */
+  .reviews-agg {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr auto;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .agg-score {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .agg-stars {
+    display: inline-flex;
+    gap: 3px;
+  }
+  .agg-stars svg { width: 22px; height: 22px; fill: var(--accent); }
+  .agg-num {
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .agg-num small {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .agg-count {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .agg-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 280px;
+  }
+  .agg-bar {
+    display: grid;
+    grid-template-columns: 28px 1fr 40px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .agg-bar .label {
+    text-align: right;
+    font-weight: 600;
+  }
+  .agg-bar .track {
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .agg-bar .fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+  }
+  .agg-bar .pct {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .write-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: background .15s ease, transform .12s ease;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .write-review:hover { background: #0f3460; transform: translateY(-1px); }
+
+  /* Filter bar */
+  .reviews-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .filter-pill {
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .filter-pill:hover { border-color: var(--navy); }
+  .filter-pill.active {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .sort-select {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Review grid */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .review {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow .2s ease;
+  }
+  .review:hover { box-shadow: var(--shadow-sm); }
+  .review-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .review-stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .review-stars svg { width: 16px; height: 16px; fill: var(--accent); }
+  .review-stars svg.empty { fill: var(--line); }
+  .review-date {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .review-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+  .review-body {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.55;
+    margin: 0;
+  }
+  .review-foot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .reviewer-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #E8F5EC;
+    color: #1A8045;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+  .verified-badge::before {
+    content: "✓";
+    font-size: 11px;
+  }
+  .persona-tag {
+    background: var(--cyan);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .load-more-reviews {
+    display: block;
+    margin: 32px auto 0;
+    padding: 14px 32px;
+    background: #fff;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .load-more-reviews:hover { background: var(--navy); color: #fff; }
+
+  @media (max-width: 980px) {
+    .reviews-inner { padding: 56px 16px; }
+    .reviews-title { font-size: 24px; margin-bottom: 24px; }
+    .reviews-agg {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 22px 20px;
+    }
+    .agg-bars { min-width: 0; }
+    .write-review { width: 100%; justify-content: center; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .reviews-filter { gap: 10px; }
+  }
+
+  /* ========== FAQ ========== */
+  .faq {
+    background: var(--bg);
+  }
+  .faq-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 72px var(--gutter);
+  }
+  .faq-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+  .faq-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 40px;
+    font-style: italic;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .faq-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color .15s ease, box-shadow .2s ease;
+  }
+  .faq-item:hover { border-color: var(--cyan); }
+  .faq-item.open { border-color: var(--cyan); box-shadow: var(--shadow-sm); }
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 22px;
+    text-align: left;
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    letter-spacing: -0.1px;
+    line-height: 1.4;
+  }
+  .faq-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--navy);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background .2s ease, transform .25s ease;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: var(--navy);
+    border-radius: 1px;
+  }
+  .faq-icon::before { width: 12px; height: 2px; }
+  .faq-icon::after { width: 2px; height: 12px; transition: transform .25s ease; }
+  .faq-item.open .faq-icon { background: var(--cyan); }
+  .faq-item.open .faq-icon::after { transform: rotate(90deg); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease, padding .3s ease;
+    padding: 0 22px;
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  .faq-item.open .faq-a {
+    max-height: 600px;
+    padding: 0 22px 22px;
+  }
+  .faq-a p { margin: 0 0 12px; }
+  .faq-a p:last-child { margin-bottom: 0; }
+  .faq-a a {
+    color: var(--navy);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--cyan);
+    text-underline-offset: 3px;
+  }
+  .faq-a a:hover { color: var(--cyan-deep); }
+
+  .faq-more {
+    margin-top: 28px;
+    padding: 22px;
+    background: var(--bp-blue);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .faq-more-text {
+    font-size: 15px;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .faq-more-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: var(--navy);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    transition: background .15s ease, transform .12s ease;
+  }
+  .faq-more-cta:hover { background: var(--navy-2); transform: translateY(-1px); }
+
+  @media (max-width: 720px) {
+    .faq-inner { padding: 56px 16px; }
+    .faq-title { font-size: 24px; }
+    .faq-q { font-size: 14.5px; padding: 16px 18px; }
+    .faq-a { font-size: 14px; padding: 0 18px; }
+    .faq-item.open .faq-a { padding: 0 18px 18px; }
+    .faq-more { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ========== Modal ========== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 33, 60, 0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 32px;
+    animation: fadeIn .2s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 1000px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+  }
+  .modal-close {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-soft);
+    cursor: pointer;
+    font-size: 22px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .modal-close:hover { background: var(--line); }
+
+  .modal-body {
+    padding: 24px 28px 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .modal-body .img-card .img-wrap { aspect-ratio: 4 / 3; }
+
+  /* ========== Responsive (mobile collapses for now; full mobile pass to come) ========== */
+  @media (max-width: 980px) {
+    .pdp {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 0 16px 48px;
+    }
+    .details {
+      position: static;
+      order: -1;
+      padding: 8px 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .product-name { font-size: 28px; }
+    .price { font-size: 26px; }
+    .modal-body { grid-template-columns: 1fr; }
+    .trust-badges { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .img-row { gap: 12px; }
+    .img-card .img-caption { font-size: 12px; }
+    .img-card .img-caption strong { font-size: 13px; }
+    .breadcrumb { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Promo bar placeholder -->
+<div class="topbar">
+  THE LIMITED EDITION MINI KIT JUST DROPPED — <a href="#">LEARN MORE</a>
+</div>
+
+<!-- Breadcrumb placeholder -->
+<nav class="breadcrumb">
+  <a href="#">Home</a> · <a href="#">Shop</a> · BlazePod Trainer Kit
+</nav>
+
+<!-- Main PDP grid -->
+<main class="pdp">
+
+  <!-- LEFT: gallery -->
+  <section class="gallery">
+
+    <!-- Row 1 — two images side by side, caption below each -->
+    <div class="img-row">
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/BlazePod_Trainer_Kit.jpg?v=1762199355&width=720"
+               alt="BlazePod Trainer Kit">
+        </div>
+        <div class="img-caption">
+          <strong>The Trainer Kit</strong>
+          6 Pods, charging base, and premium case — the complete reactive-training setup.
+        </div>
+      </div>
+
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=720"
+               alt="Trainer Kit in action">
+        </div>
+        <div class="img-caption">
+          <strong>Built for one-on-one training</strong>
+          Designed for individual athletes and coaches running personalized sessions.
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — second pair -->
+    <div class="img-row">
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/6_Pods_Front_Grey2_37d1950d-829b-4e9a-afc4-1ee503f465f4.png?v=1756964721&width=720"
+               alt="6 Pods close-up">
+        </div>
+        <div class="img-caption">
+          <strong>Built to take a hit</strong>
+          Impact-rated, splash-proof Pods with 60ms touch response — drilled, dropped, and dependable.
+        </div>
+      </div>
+
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/ChargingBase-1_ca8b7150-33af-4394-b63e-da63f2a8c4fa.png?v=1770023307&width=720"
+               alt="Charging Base">
+        </div>
+        <div class="img-caption">
+          <strong>Charge all 6 at once</strong>
+          USB-C charging base with full-kit capacity — set down at the end of a session, ready by morning.
+        </div>
+      </div>
+    </div>
+
+    <!-- See more button -->
+    <button class="see-more" id="seeMoreBtn" type="button">
+      See more images
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Validation block -->
+    <div class="validation">
+
+      <!-- Trust badges — circular seal style -->
+      <div class="trust-badges">
+
+        <!-- 1. 100% Secure Payment -->
+        <div class="trust-badge">
+          <div class="seal">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <path id="topArc1" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
+                <path id="botArc1" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
+              </defs>
+              <circle cx="60" cy="60" r="56" fill="#07213C"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#topArc1" startOffset="50%" text-anchor="middle">100% SECURE</textPath>
+              </text>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#botArc1" startOffset="50%" text-anchor="middle">PAYMENT</textPath>
+              </text>
+              <!-- Side stars -->
+              <text x="14" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
+              <text x="106" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
+              <!-- Lock icon center -->
+              <g transform="translate(60,62)">
+                <rect x="-10" y="-2" width="20" height="14" rx="2" fill="#FFFFFF"/>
+                <path d="M -6,-2 L -6,-9 A 6,6 0 0,1 6,-9 L 6,-2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+                <path d="M -3,4 L -0.5,7 L 4,1" fill="none" stroke="#07213C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+            </svg>
+          </div>
+          <span class="label">100% Secure Payment</span>
+        </div>
+
+        <!-- 2. Money-Back Guarantee (14 Days) -->
+        <div class="trust-badge">
+          <div class="seal">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <path id="topArc2" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
+                <path id="botArc2" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
+              </defs>
+              <circle cx="60" cy="60" r="56" fill="#07213C"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#topArc2" startOffset="50%" text-anchor="middle">MONEY BACK</textPath>
+              </text>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#botArc2" startOffset="50%" text-anchor="middle">GUARANTEE</textPath>
+              </text>
+              <!-- Side stars -->
+              <text x="14" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
+              <text x="106" y="64" fill="#FFFFFF" font-size="9" text-anchor="middle">★</text>
+              <!-- Center stack: 14 / DAYS -->
+              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="800" text-anchor="middle">14</text>
+              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1" text-anchor="middle">DAYS</text>
+            </svg>
+          </div>
+          <span class="label">Money-Back Guarantee</span>
+        </div>
+
+        <!-- 3. 24/7 Support -->
+        <div class="trust-badge">
+          <div class="seal">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <path id="topArc3" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
+                <path id="botArc3" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
+              </defs>
+              <circle cx="60" cy="60" r="56" fill="#07213C"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
+              <!-- Top stars row instead of curved text up top -->
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2">
+                <textPath href="#topArc3" startOffset="50%" text-anchor="middle">★ ★ ★ ★ ★</textPath>
+              </text>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#botArc3" startOffset="50%" text-anchor="middle">SUPPORT</textPath>
+              </text>
+              <!-- Center stack: 24 / HOURS -->
+              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24" font-weight="800" text-anchor="middle">24</text>
+              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1" text-anchor="middle">HOURS</text>
+            </svg>
+          </div>
+          <span class="label">24/7 Support</span>
+        </div>
+
+        <!-- 4. 1-Year Warranty -->
+        <div class="trust-badge">
+          <div class="seal">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <path id="topArc4" d="M 24,60 A 36,36 0 0,1 96,60" fill="none"/>
+                <path id="botArc4" d="M 24,60 A 36,36 0 0,0 96,60" fill="none"/>
+              </defs>
+              <circle cx="60" cy="60" r="56" fill="#07213C"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="0.8"/>
+              <!-- Top stars -->
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2">
+                <textPath href="#topArc4" startOffset="50%" text-anchor="middle">★ ★ ★</textPath>
+              </text>
+              <text fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.6">
+                <textPath href="#botArc4" startOffset="50%" text-anchor="middle">WARRANTY</textPath>
+              </text>
+              <!-- Laurel branches on sides -->
+              <g fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round">
+                <!-- Left laurel -->
+                <path d="M 28,60 Q 24,52 26,44"/>
+                <path d="M 28,60 Q 30,52 28,44"/>
+                <path d="M 28,56 Q 25,54 24,50"/>
+                <path d="M 28,52 Q 25,50 24,46"/>
+                <!-- Right laurel -->
+                <path d="M 92,60 Q 96,52 94,44"/>
+                <path d="M 92,60 Q 90,52 92,44"/>
+                <path d="M 92,56 Q 95,54 96,50"/>
+                <path d="M 92,52 Q 95,50 96,46"/>
+              </g>
+              <!-- Center stack: 1 / YEAR -->
+              <text x="60" y="62" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">1</text>
+              <text x="60" y="76" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" text-anchor="middle">YEAR</text>
+            </svg>
+          </div>
+          <span class="label">1-Year Warranty</span>
+        </div>
+
+      </div>
+
+      <!-- Stats row (from "The BlazePod standard" social-proof block on mini-kit page) -->
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">1M+</div>
+          <div class="label">Pods sold</div>
+        </div>
+        <div class="stat">
+          <div class="num">300K+</div>
+          <div class="label">Active users</div>
+        </div>
+        <div class="stat">
+          <div class="num">60+</div>
+          <div class="label">Countries</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RIGHT: product details -->
+  <aside class="details">
+    <div class="stars" aria-label="5 out of 5 stars">
+      <span class="star-track">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+      </span>
+      <span class="count">(read reviews)</span>
+    </div>
+
+    <h1 class="product-name" id="productName">BlazePod Trainer Kit</h1>
+
+    <div class="price" id="productPrice">$329</div>
+
+    <button class="add-to-cart" type="button">
+      Add to Cart
+    </button>
+
+    <!-- Affirm financing -->
+    <div class="affirm-line">
+      <a href="#" aria-label="Learn more about Affirm financing">
+        4 interest-free payments or as low as <strong>$30/mo</strong> with <span class="affirm-mark">affirm</span>
+      </a>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab-nav" role="tablist">
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-tab="inside">What's Inside</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="forwho">Who is it for</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="inside" role="tabpanel">
+        <ul>
+          <li><strong>6 Pods</strong></li>
+          <li><strong>1 Charging Base</strong></li>
+          <li><strong>1 BlazePod Case</strong> for 6 Pods</li>
+        </ul>
+      </div>
+
+      <div class="tab-panel" data-panel="forwho" role="tabpanel">
+        <ul>
+          <li>Coaches</li>
+          <li>One-on-One Training</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Add Ons -->
+    <div class="addons">
+      <h4 class="addons-title">Add Ons</h4>
+
+      <div class="addon-row">
+
+        <!-- 1. PodBases -->
+        <button class="addon-card" type="button" data-addon="podbases">
+          <div class="addon-thumb">
+            <img src="https://www.blazepod.com/cdn/shop/files/Blue_PodBase_Duo.jpg?height=180&v=1756964731"
+                 alt="PodBase Duo">
+          </div>
+          <div class="addon-info">
+            <div class="addon-name-row">
+              <span class="addon-qty-badge">3x</span>
+              <span class="addon-name">PodBases</span>
+            </div>
+            <div class="addon-meta">
+              Comes as duo (set of 2) — 3 sets to cover all 6 Pods, 1 per Pod.
+            </div>
+          </div>
+          <div class="addon-pricecol">
+            <div class="addon-price">$117 <span class="strike">$147</span></div>
+            <span class="addon-toggle" aria-hidden="true"></span>
+          </div>
+        </button>
+
+        <!-- 2. Functional adapter kits -->
+        <button class="addon-card" type="button" data-addon="adapters">
+          <div class="addon-thumb">
+            <img src="https://www.blazepod.com/cdn/shop/files/Blue_Functional_Adapter_Kit_set_of_2.png?height=180&v=1756964714"
+                 alt="Functional Adapter Kit">
+          </div>
+          <div class="addon-info">
+            <div class="addon-name-row">
+              <span class="addon-qty-badge">3x</span>
+              <span class="addon-name">Functional adapter kits</span>
+            </div>
+            <div class="addon-meta">
+              Comes as duo (set of 2) — 3 sets to cover all 6 Pods, 1 per Pod.
+            </div>
+          </div>
+          <div class="addon-pricecol">
+            <div class="addon-price">$60 <span class="strike">$75</span></div>
+            <span class="addon-toggle" aria-hidden="true"></span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="benefits">
+      <h4 class="benefits-title">Why coaches choose BlazePod</h4>
+
+      <!-- Benefit 1: Methodology -->
+      <div class="benefit">
+        <span class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L4 7v5c0 5 4 8 8 10 4-2 8-5 8-10V7l-8-5z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </span>
+        <div class="benefit-body">
+          <div class="benefit-headline">Reactive Intelligence™ methodology</div>
+          <div class="benefit-copy">Proprietary framework that makes reaction trainable — research-backed, measurable progression.</div>
+        </div>
+      </div>
+
+      <!-- Benefit 2: Activity library -->
+      <div class="benefit">
+        <span class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 5h12a3 3 0 013 3v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"/>
+            <path d="M18 8a3 3 0 013-3v11"/>
+            <path d="M7 9h7M7 13h7M7 17h5"/>
+          </svg>
+        </span>
+        <div class="benefit-body">
+          <div class="benefit-headline">500+ ready-made drills</div>
+          <div class="benefit-copy">Pre-built activities by sport and skill goal. Build your own in 60 seconds.</div>
+        </div>
+      </div>
+
+      <!-- Benefit 3: Live analytics -->
+      <div class="benefit">
+        <span class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="M7 14l3-4 4 3 5-7"/>
+          </svg>
+        </span>
+        <div class="benefit-body">
+          <div class="benefit-headline">Live performance feedback</div>
+          <div class="benefit-copy">Reaction time, accuracy, hit rate — scored in real time. Track every athlete session over session.</div>
+        </div>
+      </div>
+
+      <!-- Benefit 4: Built to take a hit -->
+      <div class="benefit">
+        <span class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 2"/>
+          </svg>
+        </span>
+        <div class="benefit-body">
+          <div class="benefit-headline">Built to take a hit</div>
+          <div class="benefit-copy">Impact-rated, splash-proof Pods with 60ms touch response — drilled, dropped, and dependable.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sibling products -->
+    <div class="kit-selector">
+      <div class="kit-selector-label">You might also like</div>
+      <div class="kit-options">
+
+        <a class="kit-card" href="https://www.blazepod.com/products/mini-kit">
+          <span class="kit-card-img">
+            <img src="https://www.blazepod.com/cdn/shop/files/Mini_Kit_transparent.png?v=1772021892&width=180" alt="Starter Kit">
+          </span>
+          <span class="kit-card-name">Starter Kit</span>
+          <span class="kit-card-meta">3 Pods</span>
+          <span class="kit-card-price">$219</span>
+        </a>
+
+        <a class="kit-card" href="https://www.blazepod.com/products/trainer-bundle">
+          <span class="badge-popular">Best Value</span>
+          <span class="kit-card-img">
+            <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=180" alt="Trainer Bundle">
+          </span>
+          <span class="kit-card-name">Trainer Bundle</span>
+          <span class="kit-card-meta">6 Pods + accessories</span>
+          <span class="kit-card-price">$479</span>
+        </a>
+
+        <a class="kit-card" href="https://www.blazepod.com/products/ultimate-bundle">
+          <span class="kit-card-img">
+            <img src="https://www.blazepod.com/cdn/shop/files/mm-ultimate-trainer-bundle_x260.webp?v=1732523499" alt="Ultimate Trainer Bundle">
+          </span>
+          <span class="kit-card-name">Ultimate Trainer Bundle</span>
+          <span class="kit-card-meta">Full coach setup</span>
+          <span class="kit-card-price">$699</span>
+        </a>
+
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- Setup — 3-step progress with active video -->
+<section class="setup-reels" aria-labelledby="setupTitle">
+  <div class="setup-reels-inner">
+
+    <div class="setup-reels-head">
+      <div>
+        <h2 class="setup-reels-title" id="setupTitle">Master your BlazePod setup in 3 quick steps</h2>
+        <p class="setup-reels-sub">Quick-bite clips to get unboxed, connected, and playing your first challenge in under three minutes.</p>
+      </div>
+      <div class="setup-reels-time"><strong>Total time:</strong> under 3 min</div>
+    </div>
+
+    <div class="setup-flow">
+
+      <!-- Left: step list (progress) -->
+      <div class="setup-steps" role="tablist" aria-label="Setup steps">
+        <button class="step-item active" type="button" role="tab" aria-selected="true" data-step="1">
+          <span class="step-dot">1</span>
+          <span class="step-text">
+            <span class="step-eyebrow">Step 1</span>
+            <span class="step-name">Unbox &amp; Charge</span>
+            <span class="step-desc">Unpack the Pods. Drop them on the charging base.</span>
+          </span>
+        </button>
+
+        <button class="step-item" type="button" role="tab" aria-selected="false" data-step="2">
+          <span class="step-dot">2</span>
+          <span class="step-text">
+            <span class="step-eyebrow">Step 2</span>
+            <span class="step-name">Connect the App</span>
+            <span class="step-desc">Download, pair over Bluetooth, pick a ready-made drill.</span>
+          </span>
+        </button>
+
+        <button class="step-item" type="button" role="tab" aria-selected="false" data-step="3">
+          <span class="step-dot">3</span>
+          <span class="step-text">
+            <span class="step-eyebrow">Step 3</span>
+            <span class="step-name">Tap &amp; Play</span>
+            <span class="step-desc">Place the Pods. Hit start. Tap the lights as they go.</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Right: large active video -->
+      <div class="setup-player">
+        <span class="player-badge" id="playerBadge">Step 1 · Unbox &amp; Charge</span>
+
+        <div class="player-frame active" data-step="1">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/8bd9ea6c7b83401798c43aac7a11d1c4.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="player-overlay"><div class="play-circle"></div></div>
+        </div>
+
+        <div class="player-frame" data-step="2">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/0f9d409dbf7148fc9cd608b10a4e1323.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="player-overlay"><div class="play-circle"></div></div>
+        </div>
+
+        <div class="player-frame" data-step="3">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/8c5f5bb7909548df9ca6264d4f1c357b.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="player-overlay"><div class="play-circle"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Research / Science band -->
+<section class="science" aria-labelledby="scienceTitle">
+  <div class="science-inner">
+
+    <div class="science-text">
+      <div class="science-eyebrow">Research-backed · BlazePod Science</div>
+      <h2 class="science-headline" id="scienceTitle">
+        BlazePod builds <em>Sports IQ.</em>
+      </h2>
+      <p class="science-body">
+        It sharpens <strong>perception-action coupling</strong> — training your athletes' eyes to scan chaotic environments, ignore distractions, and execute explosive movements in less than half a second. The decisive half-second of every play, drilled deliberately.
+      </p>
+      <div class="science-source">
+        Based on peer-reviewed research using BlazePod Pods. <a href="#">See the studies →</a>
+      </div>
+    </div>
+
+    <div class="science-stat" role="figure" aria-label="Training protocol and measurable results">
+      <div class="stat-label">The hard data</div>
+      <div class="stat-figures">
+        <div class="stat-figure">
+          <span class="num">15<small style="font-size:24px;font-weight:700;color:#8DA4C0;margin-left:2px;">min</small></span>
+          <span class="unit">Per session</span>
+        </div>
+        <span class="stat-times">×</span>
+        <div class="stat-figure">
+          <span class="num">2<small style="font-size:24px;font-weight:700;color:#8DA4C0;margin-left:2px;">/wk</small></span>
+          <span class="unit">Twice weekly</span>
+        </div>
+      </div>
+      <div class="stat-results">
+        <div class="stat-results-title">Significant, measurable upgrades in:</div>
+        <ul>
+          <li>Field agility</li>
+          <li>Multi-directional speed</li>
+          <li>Explosive power</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Testimonials (HOW BLAZEPOD MADE A DIFFERENCE) -->
+<section class="testimonials" aria-labelledby="testimonialsTitle">
+  <div class="testimonials-inner">
+    <h2 class="testimonials-title" id="testimonialsTitle">How BlazePod Made a Difference</h2>
+    <p class="testimonials-sub">Real coaches. Real athletes. Real results.</p>
+
+    <div class="testimonial-row">
+
+      <div class="testimonial-card">
+        <div class="testimonial-video" data-video="t1">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/04b4964822aa4c3ba0f6efa28ef13ce8.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="testimonial-play"><div class="play-circle"></div></div>
+        </div>
+        <div class="testimonial-meta">
+          <div class="testimonial-name">Coach Joe</div>
+          <div class="testimonial-role">Total Player</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-video" data-video="t2">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/df8f2beca7e54f46b4837f1042dc3a59.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="testimonial-play"><div class="play-circle"></div></div>
+        </div>
+        <div class="testimonial-meta">
+          <div class="testimonial-name">Jo Canales</div>
+          <div class="testimonial-role">Performance Coach, Mexico National Team</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-video" data-video="t3">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/ebe75864c1fa4e4196cdff60f7134de5.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="testimonial-play"><div class="play-circle"></div></div>
+        </div>
+        <div class="testimonial-meta">
+          <div class="testimonial-name">Josh Ewens</div>
+          <div class="testimonial-role">Fitness Coach, West Ham United F.C.</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-video" data-video="t4">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/25d3ca2bde51464f9954fee450bb4e95.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="testimonial-play"><div class="play-circle"></div></div>
+        </div>
+        <div class="testimonial-meta">
+          <div class="testimonial-name">Soccer Dad</div>
+          <div class="testimonial-role">Parent</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-video" data-video="t5">
+          <video preload="metadata" playsinline muted>
+            <source src="https://cdn.shopify.com/videos/c/o/v/609bb1e86c4f4ebda80e38c068526f75.mp4#t=0.1" type="video/mp4">
+          </video>
+          <div class="testimonial-play"><div class="play-circle"></div></div>
+        </div>
+        <div class="testimonial-meta">
+          <div class="testimonial-name">Jacob</div>
+          <div class="testimonial-role">Soccer Player</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section class="reviews" aria-labelledby="reviewsTitle">
+  <div class="reviews-inner">
+    <h2 class="reviews-title" id="reviewsTitle">Reviews</h2>
+
+    <!-- Aggregate -->
+    <div class="reviews-agg">
+      <div class="agg-score">
+        <div class="agg-stars" aria-label="4.8 out of 5 stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+        </div>
+        <div class="agg-num">4.8<small>/ 5</small></div>
+        <div class="agg-count">Based on 1,247 verified reviews</div>
+      </div>
+
+      <div class="agg-bars">
+        <div class="agg-bar"><span class="label">5★</span><span class="track"><span class="fill" style="width:88%"></span></span><span class="pct">88%</span></div>
+        <div class="agg-bar"><span class="label">4★</span><span class="track"><span class="fill" style="width:8%"></span></span><span class="pct">8%</span></div>
+        <div class="agg-bar"><span class="label">3★</span><span class="track"><span class="fill" style="width:3%"></span></span><span class="pct">3%</span></div>
+        <div class="agg-bar"><span class="label">2★</span><span class="track"><span class="fill" style="width:1%"></span></span><span class="pct">1%</span></div>
+        <div class="agg-bar"><span class="label">1★</span><span class="track"><span class="fill" style="width:0%"></span></span><span class="pct">0%</span></div>
+      </div>
+
+      <button class="write-review" type="button">Write a Review</button>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="reviews-filter">
+      <div class="filter-group">
+        <span class="filter-label">Filter by</span>
+        <button class="filter-pill active" type="button" data-filter="all">All reviews</button>
+        <button class="filter-pill" type="button" data-filter="coach">Coaches</button>
+        <button class="filter-pill" type="button" data-filter="athlete">Athletes</button>
+        <button class="filter-pill" type="button" data-filter="parent">Parents</button>
+        <button class="filter-pill" type="button" data-filter="therapist">Therapists</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Sort by</span>
+        <select class="sort-select" aria-label="Sort reviews">
+          <option>Most recent</option>
+          <option>Highest rated</option>
+          <option>Lowest rated</option>
+          <option>Most helpful</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Review cards -->
+    <div class="reviews-grid">
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="5 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">April 24, 2026</span>
+        </div>
+        <h3 class="review-title">Game-changing for our academy</h3>
+        <p class="review-body">My U17 squad's split-step reaction dropped from 380ms to 290ms in six weeks. The kids love the competition, and I love being able to actually measure progress for the first time.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">Marco S.</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Coach</span>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="5 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">April 12, 2026</span>
+        </div>
+        <h3 class="review-title">Worth every dollar</h3>
+        <p class="review-body">Amazing product, packaging, and service. We love our BlazePods. I have my own, and these are actually a gift to my daughter — she's been using them for her soccer training every day.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">Ted Glynn</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Parent</span>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="5 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">April 3, 2026</span>
+        </div>
+        <h3 class="review-title">Total transformation in rehab sessions</h3>
+        <p class="review-body">I use BlazePod with return-to-play patients across all stages of rehab. The app is intuitive, sessions are saved, and the engagement factor is unmatched — even the most resistant patients buy in immediately.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">Dr. Paul W.</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Therapist</span>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="4 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24" class="empty"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">March 28, 2026</span>
+        </div>
+        <h3 class="review-title">Best buy of the year</h3>
+        <p class="review-body">The pods themselves are AMAZING! The customer service is great, and my son absolutely loves using them for his training. Wish the carry case was a bit lighter, but otherwise no complaints.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">Anna K.</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Parent</span>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="5 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">March 19, 2026</span>
+        </div>
+        <h3 class="review-title">My athletes are addicted</h3>
+        <p class="review-body">I've been coaching basketball for 18 years and this is the most engaging tool I've ever added to training. The 1v1 reactive drills have my players begging for more reps — never thought I'd see that.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">Coach Diaz</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Coach</span>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <span class="review-stars" aria-label="5 stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
+          </span>
+          <span class="review-date">March 5, 2026</span>
+        </div>
+        <h3 class="review-title">Sharper reactions, real results</h3>
+        <p class="review-body">Easy to order, quick shipping, and great product. After 6 weeks of 15-min sessions twice a week my multi-directional speed in agility tests is measurably better. Pods are bulletproof.</p>
+        <div class="review-foot">
+          <span class="reviewer-name">M. Menezes</span>
+          <span class="verified-badge">Verified buyer</span>
+          <span class="persona-tag">Athlete</span>
+        </div>
+      </article>
+
+    </div>
+
+    <button class="load-more-reviews" type="button">Load more reviews</button>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" aria-labelledby="faqTitle">
+  <div class="faq-inner">
+    <h2 class="faq-title" id="faqTitle">Frequently Asked Questions</h2>
+    <p class="faq-sub">Everything you need to know before adding to cart.</p>
+
+    <div class="faq-list">
+
+      <div class="faq-item open">
+        <button class="faq-q" type="button" aria-expanded="true">
+          What is BlazePod?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>BlazePod is a holistic reaction training platform that guides your training from start to finish. Use your Pods for activation, strength &amp; conditioning, skills training, and rehabilitation — light-based visual cues that challenge you, your athletes, and your clients.</p>
+          <p>Browse the BlazePod app and choose pre-made activities, or create, save and share your own. Measure performance down to milliseconds, analyze results with instant data, and act on it.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          What do I get when purchasing the BlazePod platform?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>By buying BlazePod, you select from a range of light Pods kits and bundles that serve as your reaction training platform. To use them, download the free BlazePod app — you'll receive our <strong>BlazePod Go</strong> plan immediately. To unlock the full coach toolkit, upgrade to <strong>BlazePod Pro</strong> anytime. You can also add accessories (PodBases, adapters, cones) to tailor training to your discipline.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          What's the difference between Go and Pro membership?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p><strong>BlazePod Go</strong> is free for casual users — 30+ pre-defined activities and the ability to build your own based on our most popular light logic.</p>
+          <p><strong>BlazePod Pro</strong> is the premium membership for performance coaches, fitness trainers, and therapists. It adds custom activities, personalized client exercises, Athlete Performance Tests, motivational leaderboards, and in-depth analytics so you can see exactly where each athlete needs to focus.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          How do I get started with BlazePod?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>Unbox your Pods, charge them on the base, download the BlazePod app, pair the Pods over Bluetooth, and pick a drill — you're running your first session within 5 minutes.</p>
+          <p>Full instructions: <a href="https://blazepod-help-center.gorgias.help/en-US/getting-started-guide-188981" target="_blank" rel="noopener">check out the BlazePod Getting Started Guide</a>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          When will my order ship?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>All orders placed Monday–Friday before 1 PM PST ship within 24 hours. Orders placed after 1 PM PST ship the following business day.</p>
+          <p>Orders placed on weekends, during major promotions (Black Friday/Cyber Monday), or around holidays may take an extra 1–2 days to process due to increased volume.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          Does the price include VAT and taxes?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p><strong>US orders:</strong> Sales tax and any applicable duties are charged at checkout based on your shipping address.</p>
+          <p><strong>All other locations:</strong> Shipments may be subject to import charges (duties, customs tariffs, VAT) set by your destination country and levied when the package arrives. BlazePod does not collect these at checkout, so they must be paid for the package to clear customs. Contact your local customs office for exact rates.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          What are your shipping rates?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>We ship worldwide. Shipping rates vary by kit size and destination — the final price including shipping is shown on the checkout page.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">
+          What forms of payment do you accept?
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a">
+          <p>We accept all major credit and debit cards (Visa, Mastercard, American Express), PayPal, Amazon Pay, Shopify Pay, Google Pay, and Affirm for installment financing.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-more">
+      <div class="faq-more-text">Didn't find your answer?</div>
+      <a class="faq-more-cta" href="https://www.blazepod.com/pages/contact-us" target="_blank" rel="noopener">Contact our team</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Modal: more images -->
+<div class="modal-overlay" id="moreModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">More images</h2>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/Pod_Front_5f8f399d-4a6f-4179-bb9b-f17c22e076ad.png?v=1770023307&width=720"
+               alt="Single Pod, front view">
+        </div>
+        <div class="img-caption">
+          <strong>The Pod, up close</strong>
+          Tactile silicone shell, full RGB lighting ring, capacitive top — engineered for any surface.
+        </div>
+      </div>
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/CopyofBag6Pods_1_ec9027e0-6a08-4db3-999e-87a70a0642d9.png?v=1756964721&width=720"
+               alt="Pods in bag">
+        </div>
+        <div class="img-caption">
+          <strong>Pack and go</strong>
+          Premium carry-bag fits all 6 Pods, charging base, and accessories — built for travel between sessions.
+        </div>
+      </div>
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/typec.png?v=1774623195&width=720"
+               alt="USB-C charging">
+        </div>
+        <div class="img-caption">
+          <strong>USB-C standard</strong>
+          One cable for everything — no proprietary ports, no chasing adapters.
+        </div>
+      </div>
+      <div class="img-card">
+        <div class="img-wrap">
+          <img src="https://www.blazepod.com/cdn/shop/files/Case_Small_Topshot_DarkBlue_64617300-935d-4196-8e11-8bc0c1041eb5.png?v=1756964792&width=720"
+               alt="Premium case open">
+        </div>
+        <div class="img-caption">
+          <strong>The premium case</strong>
+          Hard-shell exterior, foam-cut interior — protects the kit between gym, field, and clinic.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const openBtn = document.getElementById('seeMoreBtn');
+  const modal = document.getElementById('moreModal');
+  const closeBtn = document.getElementById('modalClose');
+
+  openBtn.addEventListener('click', () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; });
+  closeBtn.addEventListener('click', () => { modal.classList.remove('open'); document.body.style.overflow = ''; });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) { modal.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) {
+      modal.classList.remove('open'); document.body.style.overflow = '';
+    }
+  });
+
+  // Tabs
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      tabBtns.forEach(b => {
+        const isActive = b === btn;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      tabPanels.forEach(p => {
+        p.classList.toggle('active', p.dataset.panel === target);
+      });
+    });
+  });
+
+  // Add-on cards (click to toggle selected)
+  document.querySelectorAll('.addon-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('selected');
+      card.setAttribute('aria-pressed', card.classList.contains('selected') ? 'true' : 'false');
+    });
+  });
+
+  // Testimonial videos — click to play with sound, pause others, show controls
+  document.querySelectorAll('.testimonial-video').forEach(wrap => {
+    const video = wrap.querySelector('video');
+    wrap.addEventListener('click', () => {
+      // Pause and reset all other testimonial videos
+      document.querySelectorAll('.testimonial-video').forEach(other => {
+        if (other !== wrap) {
+          const v = other.querySelector('video');
+          v.pause();
+          v.muted = true;
+          v.removeAttribute('controls');
+          other.classList.remove('playing');
+        }
+      });
+      // Play this one with sound + controls
+      video.muted = false;
+      video.setAttribute('controls', '');
+      video.play();
+      wrap.classList.add('playing');
+    });
+  });
+
+  // Setup section — step switcher (left) + active video player (right)
+  const stepItems = document.querySelectorAll('.step-item');
+  const playerFrames = document.querySelectorAll('.player-frame');
+  const playerBadge = document.getElementById('playerBadge');
+
+  function setActiveStep(stepNum) {
+    stepItems.forEach(item => {
+      const n = parseInt(item.dataset.step, 10);
+      item.classList.toggle('active', n === stepNum);
+      item.classList.toggle('done', n < stepNum);
+      item.setAttribute('aria-selected', n === stepNum ? 'true' : 'false');
+    });
+    playerFrames.forEach(frame => {
+      const n = parseInt(frame.dataset.step, 10);
+      const isActive = n === stepNum;
+      frame.classList.toggle('active', isActive);
+      const v = frame.querySelector('video');
+      if (!isActive) {
+        v.pause();
+        v.muted = true;
+        v.removeAttribute('controls');
+        frame.classList.remove('playing');
+      }
+    });
+    // Update badge label
+    const activeItem = document.querySelector(`.step-item[data-step="${stepNum}"]`);
+    if (activeItem && playerBadge) {
+      const eyebrow = activeItem.querySelector('.step-eyebrow').textContent.trim();
+      const name = activeItem.querySelector('.step-name').textContent.trim();
+      playerBadge.textContent = `${eyebrow} · ${name}`;
+    }
+  }
+
+  stepItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const stepNum = parseInt(item.dataset.step, 10);
+      setActiveStep(stepNum);
+    });
+  });
+
+  // Click the active video to play with sound + controls
+  playerFrames.forEach(frame => {
+    const overlay = frame.querySelector('.player-overlay');
+    const video = frame.querySelector('video');
+    overlay.addEventListener('click', () => {
+      // Only act if this is the active frame
+      if (!frame.classList.contains('active')) return;
+      video.muted = false;
+      video.setAttribute('controls', '');
+      video.play();
+      frame.classList.add('playing');
+    });
+  });
+
+  // Review filter pills — toggle active + filter visible reviews by persona tag
+  const filterPills = document.querySelectorAll('.filter-pill');
+  const reviewCards = document.querySelectorAll('.review');
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const f = pill.dataset.filter;
+      reviewCards.forEach(card => {
+        const tag = card.querySelector('.persona-tag')?.textContent.trim().toLowerCase();
+        const show = (f === 'all') || (tag === f);
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+
+  // FAQ accordion — click to toggle, allow multiple open
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  });
+
+  // Kit selector — click to switch active kit, update name + price
+  const kitCards = document.querySelectorAll('.kit-card');
+  const productName = document.getElementById('productName');
+  const productPrice = document.getElementById('productPrice');
+  kitCards.forEach(card => {
+    card.addEventListener('click', () => {
+      kitCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      productName.textContent = card.dataset.name;
+      productPrice.textContent = card.dataset.price;
+    });
+  });
+</script>
+
+</body>
+</html>
