@@ -605,6 +605,13 @@
     font-weight: 600;
     color: var(--ink);
   }
+  .tab-panel p {
+    margin: 0;
+    padding: 4px 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+  }
 
   /* ========== Add Ons (below tabs) ========== */
   .addons {
@@ -2109,11 +2116,16 @@
     <!-- Tabs -->
     <div class="tabs">
       <div class="tab-nav" role="tablist">
-        <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-tab="inside">What's Inside</button>
+        <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-tab="description">What is it?</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="inside">What's Inside</button>
         <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="forwho">Who is it for</button>
       </div>
 
-      <div class="tab-panel active" data-panel="inside" role="tabpanel">
+      <div class="tab-panel active" data-panel="description" role="tabpanel">
+        <p>Get started with BlazePod's exciting new training experience to improve physical &amp; cognitive skills in any field, boost motivation, and realize your full potential. Access our app's ready-to-use activities &amp; tests created by BlazePod experts to enjoy innovative &amp; challenging training.</p>
+      </div>
+
+      <div class="tab-panel" data-panel="inside" role="tabpanel">
         <ul>
           <li><strong>6 Pods</strong></li>
           <li><strong>1 Charging Base</strong></li>
