@@ -198,6 +198,44 @@
     transition: opacity .2s ease;
   }
   .media-frame.playing .main-play-overlay { opacity: 0; pointer-events: none; }
+
+  /* Caption overlay on main image */
+  .main-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 56px 24px 20px;
+    background: linear-gradient(to top, rgba(7, 33, 60, 0.82) 0%, rgba(7, 33, 60, 0.5) 55%, rgba(7, 33, 60, 0) 100%);
+    color: #fff;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 3;
+  }
+  .main-caption.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .main-caption-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+  .main-caption-body {
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 92%;
+  }
+  @media (max-width: 720px) {
+    .main-caption { padding: 40px 16px 14px; }
+    .main-caption-title { font-size: 16px; }
+    .main-caption-body { font-size: 12.5px; }
+  }
   .main-play-overlay .play-circle {
     width: 80px;
     height: 80px;
@@ -473,6 +511,75 @@
     margin-top: 2px;
   }
   .kit-card.active .kit-card-price { color: var(--navy); }
+
+  /* ========== Related products — full-width section ========== */
+  .related-products {
+    background: var(--bg-soft);
+    margin-top: 16px;
+  }
+  .related-products-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 64px var(--gutter);
+  }
+  .related-products-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--navy);
+    text-align: center;
+    margin: 0 0 32px;
+    letter-spacing: -0.3px;
+  }
+  .related-products .kit-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .related-products .kit-card {
+    padding: 24px 18px 22px;
+    gap: 12px;
+    text-decoration: none;
+    border-width: 1px;
+    background: #fff;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  }
+  .related-products .kit-card:hover {
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .related-products .kit-card-img {
+    height: 180px;
+    background: var(--bp-white);
+    border-radius: 10px;
+  }
+  .related-products .kit-card-img img {
+    max-width: 75%;
+    max-height: 85%;
+  }
+  .related-products .kit-card-name {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+  .related-products .kit-card-meta {
+    font-size: 13px;
+    min-height: 18px;
+  }
+  .related-products .kit-card-price {
+    font-size: 20px;
+    margin-top: 6px;
+  }
+  .related-products .kit-card .badge-popular {
+    font-size: 10px;
+    padding: 4px 10px;
+    top: -12px;
+  }
+  @media (max-width: 720px) {
+    .related-products-inner { padding: 40px 20px; }
+    .related-products-title { font-size: 22px; margin-bottom: 24px; }
+    .related-products .kit-options { grid-template-columns: 1fr; gap: 14px; }
+    .related-products .kit-card-img { height: 160px; }
+  }
 
   .add-to-cart {
     width: 100%;
@@ -1925,48 +2032,72 @@
     <div class="gallery-media">
       <div class="thumb-col" role="tablist" aria-label="Product media">
 
-        <button class="thumb is-video active" type="button" role="tab" aria-selected="true" data-media="0">
+        <button class="thumb is-video active" type="button" role="tab" aria-selected="true" data-media="0"
+          data-caption-title="See it in action"
+          data-caption-body="Reactive Intelligence™ training — watch the Trainer Kit drive real reactions, in real time.">
           <video preload="metadata" muted playsinline>
             <source src="https://cdn.shopify.com/videos/c/o/v/fd264780996f4e6a952804bd37b05358.mp4#t=0.5" type="video/mp4">
           </video>
           <span class="thumb-play-mini" aria-hidden="true"></span>
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="1">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="1"
+          data-caption-title="Everything you need to start"
+          data-caption-body="6 Pods, charging base, and premium case — the full Trainer Kit, ready out of the box.">
           <img src="https://www.blazepod.com/cdn/shop/files/BlazePod_Trainer_Kit.jpg?v=1762199355&width=200" alt="Trainer Kit">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="2">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="2"
+          data-caption-title="Train anywhere"
+          data-caption-body="Indoors, outdoors, gym, court — the Trainer Kit goes wherever your sessions go.">
           <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=200" alt="Trainer Kit in action">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="3">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="3"
+          data-caption-title="6 Pods for any drill setup"
+          data-caption-body="Solo, pairs, or full team — six Pods give you the flexibility to run any pattern.">
           <img src="https://www.blazepod.com/cdn/shop/files/6_Pods_Front_Grey2_37d1950d-829b-4e9a-afc4-1ee503f465f4.png?v=1756964721&width=200" alt="6 Pods">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="4">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="4"
+          data-caption-title="Charge all 6 Pods at once"
+          data-caption-body="One compact base, full kit charged and ready for the next session.">
           <img src="https://www.blazepod.com/cdn/shop/files/ChargingBase-1_ca8b7150-33af-4394-b63e-da63f2a8c4fa.png?v=1770023307&width=200" alt="Charging base">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="5">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="5"
+          data-caption-title="60ms touch response"
+          data-caption-body="Impact-rated and splash-proof — built to be drilled, dropped, and dependable.">
           <img src="https://www.blazepod.com/cdn/shop/files/Pod_Front_5f8f399d-4a6f-4179-bb9b-f17c22e076ad.png?v=1770023307&width=200" alt="Single Pod close-up">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="6">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="6"
+          data-caption-title="Premium case included"
+          data-caption-body="Protective hard case keeps the full kit organized between sessions and on the move.">
           <img src="https://www.blazepod.com/cdn/shop/files/Case_Small_Topshot_DarkBlue_64617300-935d-4196-8e11-8bc0c1041eb5.png?v=1756964792&width=200" alt="Premium case">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="7">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="7"
+          data-caption-title="Travel-ready carry bag"
+          data-caption-body="Holds all 6 Pods and accessories — grab and go for any training location.">
           <img src="https://www.blazepod.com/cdn/shop/files/CopyofBag6Pods_1_ec9027e0-6a08-4db3-999e-87a70a0642d9.png?v=1756964721&width=200" alt="Pods bag">
         </button>
 
-        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="8">
+        <button class="thumb" type="button" role="tab" aria-selected="false" data-media="8"
+          data-caption-title="USB-C charging"
+          data-caption-body="Modern, universal, and fast — top up the base with any USB-C cable you already own.">
           <img src="https://www.blazepod.com/cdn/shop/files/typec.png?v=1774623195&width=200" alt="USB-C charging">
         </button>
 
       </div>
 
       <div class="main-display">
+
+        <!-- Caption overlay — updates when a thumbnail is clicked -->
+        <div class="main-caption" id="mainCaption" aria-live="polite">
+          <div class="main-caption-title" id="mainCaptionTitle"></div>
+          <div class="main-caption-body" id="mainCaptionBody"></div>
+        </div>
 
         <div class="media-frame video-frame active playing" data-media="0" role="tabpanel">
           <video preload="auto" playsinline muted autoplay loop>
@@ -2270,42 +2401,6 @@
       </div>
 
     </div>
-
-    <!-- Sibling products -->
-    <div class="kit-selector">
-      <div class="kit-selector-label">You might also like</div>
-      <div class="kit-options">
-
-        <a class="kit-card" href="https://www.blazepod.com/products/mini-kit">
-          <span class="kit-card-img">
-            <img src="https://www.blazepod.com/cdn/shop/files/Mini_Kit_transparent.png?v=1772021892&width=180" alt="Starter Kit">
-          </span>
-          <span class="kit-card-name">Starter Kit</span>
-          <span class="kit-card-meta">3 Pods</span>
-          <span class="kit-card-price">$219</span>
-        </a>
-
-        <a class="kit-card" href="https://www.blazepod.com/products/trainer-bundle">
-          <span class="badge-popular">Best Value</span>
-          <span class="kit-card-img">
-            <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=180" alt="Trainer Bundle">
-          </span>
-          <span class="kit-card-name">Trainer Bundle</span>
-          <span class="kit-card-meta">6 Pods + accessories</span>
-          <span class="kit-card-price">$479</span>
-        </a>
-
-        <a class="kit-card" href="https://www.blazepod.com/products/ultimate-bundle">
-          <span class="kit-card-img">
-            <img src="https://www.blazepod.com/cdn/shop/files/mm-ultimate-trainer-bundle_x260.webp?v=1732523499" alt="Ultimate Trainer Bundle">
-          </span>
-          <span class="kit-card-name">Ultimate Trainer Bundle</span>
-          <span class="kit-card-meta">Full coach setup</span>
-          <span class="kit-card-price">$699</span>
-        </a>
-
-      </div>
-    </div>
   </aside>
 
 </main>
@@ -2499,6 +2594,45 @@
           <div class="testimonial-role">Soccer Player</div>
         </div>
       </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- You might also like — full-width related products -->
+<section class="related-products" aria-labelledby="relatedProductsTitle">
+  <div class="related-products-inner">
+    <h2 class="related-products-title" id="relatedProductsTitle">You might also like</h2>
+
+    <div class="kit-options">
+
+      <a class="kit-card" href="https://www.blazepod.com/products/mini-kit">
+        <span class="kit-card-img">
+          <img src="https://www.blazepod.com/cdn/shop/files/Mini_Kit_transparent.png?v=1772021892&width=400" alt="Starter Kit">
+        </span>
+        <span class="kit-card-name">Starter Kit</span>
+        <span class="kit-card-meta">4 Pods</span>
+        <span class="kit-card-price">$219</span>
+      </a>
+
+      <a class="kit-card" href="https://www.blazepod.com/products/trainer-bundle">
+        <span class="badge-popular">Best Value</span>
+        <span class="kit-card-img">
+          <img src="https://www.blazepod.com/cdn/shop/files/Trainer_Kit_scene_image.jpg?v=1756964720&width=400" alt="Trainer Bundle">
+        </span>
+        <span class="kit-card-name">Trainer Bundle</span>
+        <span class="kit-card-meta">6 Pods +6 PodBases</span>
+        <span class="kit-card-price">$479</span>
+      </a>
+
+      <a class="kit-card" href="https://www.blazepod.com/products/ultimate-bundle">
+        <span class="kit-card-img">
+          <img src="https://www.blazepod.com/cdn/shop/files/mm-ultimate-trainer-bundle_x260.webp?v=1732523499" alt="Ultimate Trainer Bundle">
+        </span>
+        <span class="kit-card-name">Ultimate Trainer Bundle</span>
+        <span class="kit-card-meta">Full coach setup</span>
+        <span class="kit-card-price">$699</span>
+      </a>
 
     </div>
   </div>
@@ -2791,6 +2925,27 @@
   // Gallery — thumbnail click swaps the main display
   const thumbsAll = document.querySelectorAll('.thumb');
   const framesAll = document.querySelectorAll('.media-frame');
+  const mainCaption = document.getElementById('mainCaption');
+  const mainCaptionTitle = document.getElementById('mainCaptionTitle');
+  const mainCaptionBody = document.getElementById('mainCaptionBody');
+
+  function updateMainCaption(thumb) {
+    if (!mainCaption || !thumb) return;
+    const title = thumb.dataset.captionTitle || '';
+    const body = thumb.dataset.captionBody || '';
+    if (!title && !body) {
+      mainCaption.classList.remove('is-visible');
+      return;
+    }
+    mainCaptionTitle.textContent = title;
+    mainCaptionBody.textContent = body;
+    mainCaption.classList.add('is-visible');
+  }
+
+  // Initialize caption with the active thumbnail on load
+  const initialThumb = document.querySelector('.thumb.active') || thumbsAll[0];
+  updateMainCaption(initialThumb);
+
   thumbsAll.forEach(thumb => {
     thumb.addEventListener('click', () => {
       const idx = thumb.dataset.media;
@@ -2810,6 +2965,7 @@
           frame.classList.remove('playing');
         }
       });
+      updateMainCaption(thumb);
     });
   });
 
