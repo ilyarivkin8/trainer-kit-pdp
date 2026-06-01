@@ -400,9 +400,10 @@
   .stars .count {
     color: var(--muted);
     font-weight: 500;
-    text-decoration: underline;
-    cursor: pointer;
   }
+  .stars .count strong { color: var(--navy); }
+  .stars .count a { color: var(--muted); text-decoration: underline; cursor: pointer; }
+  .stars .count a:hover { color: var(--navy); }
 
   .product-name {
     font-size: 36px;
@@ -606,6 +607,88 @@
     transform: translateY(-1px);
   }
   .add-to-cart:active { transform: translateY(0); }
+
+  /* ========== Sale notification banner ========== */
+  .sale-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #fff;
+  }
+  .sale-banner.hidden { display: none; }
+  .sale-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+  .sale-tag {
+    background: var(--cyan);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .sale-text {
+    font-weight: 600;
+    font-size: 12px;
+    color: rgba(255,255,255,0.95);
+  }
+  .sale-countdown {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .sale-countdown .cd-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.12);
+    border-radius: 5px;
+    padding: 3px 6px;
+    min-width: 32px;
+  }
+  .sale-countdown .cd-num {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--cyan);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .sale-countdown .cd-lbl {
+    font-size: 8px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .sale-countdown .cd-sep {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+  }
+  .sale-dismiss {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .sale-dismiss:hover { color: #fff; }
 
   /* ========== Affirm financing line ========== */
   .affirm-line {
@@ -2179,7 +2262,7 @@
               <circle cx="34" cy="36" r="3.5"/>
             </svg>
           </div>
-          <span class="label">Fast Shipping</span>
+          <span class="label">Ships out in 1 day</span>
         </div>
 
         <!-- 4. 24/7 Support — headset icon -->
@@ -2218,7 +2301,25 @@
 
   <!-- RIGHT: product details -->
   <aside class="details">
-    <div class="stars" aria-label="5 out of 5 stars">
+    <!-- SALE BANNER — set data-sale-end to sale end; remove this block entirely when no sale is running -->
+    <div class="sale-banner" id="saleBanner" data-sale-end="2026-06-06T23:59:59">
+      <div class="sale-banner-left">
+        <span class="sale-tag">Summer Sale</span>
+        <span class="sale-text">Save 20% - Ends soon</span>
+      </div>
+      <div class="sale-countdown">
+        <div class="cd-unit"><span class="cd-num" id="sbDays">00</span><span class="cd-lbl">Days</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="sbHrs">00</span><span class="cd-lbl">Hrs</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="sbMin">00</span><span class="cd-lbl">Min</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="sbSec">00</span><span class="cd-lbl">Sec</span></div>
+      </div>
+      <button class="sale-dismiss" id="saleDismiss" aria-label="Dismiss">×</button>
+    </div>
+
+    <div class="stars" aria-label="4.7 out of 5 stars">
       <span class="star-track">
         <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
         <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
@@ -2226,7 +2327,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
         <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.6 4.1L18 21l-6-4.6L6 21l1.6-7.9L2 9h7z"/></svg>
       </span>
-      <span class="count">(read reviews)</span>
+      <span class="count"><strong>4.7</strong> · <a href="#reviewsTitle">73 reviews</a></span>
     </div>
 
     <h1 class="product-name" id="productName">BlazePod Trainer Kit</h1>
@@ -3125,6 +3226,27 @@
       if (stickyPrice) stickyPrice.textContent = card.dataset.price;
     });
   });
+
+  // Sale banner countdown
+  (function() {
+    const banner = document.getElementById('saleBanner');
+    if (!banner) return;
+    const saleEnd = new Date(banner.dataset.saleEnd);
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      const diff = saleEnd - Date.now();
+      if (diff <= 0) { banner.classList.add('hidden'); return; }
+      document.getElementById('sbDays').textContent = pad(Math.floor(diff / 86400000));
+      document.getElementById('sbHrs').textContent  = pad(Math.floor((diff % 86400000) / 3600000));
+      document.getElementById('sbMin').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+      document.getElementById('sbSec').textContent  = pad(Math.floor((diff % 60000) / 1000));
+    }
+    tick();
+    setInterval(tick, 1000);
+    document.getElementById('saleDismiss').addEventListener('click', function() {
+      banner.classList.add('hidden');
+    });
+  })();
 
   // Sticky CTA — show once the main Add to Cart button scrolls out of view
   const mainAddToCart = document.querySelector('.add-to-cart');
